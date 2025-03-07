@@ -6,7 +6,12 @@ import * as reducers from "./reducers";
 
 export default function configureStore(){
     const rootReducers = combineReducers(reducers);
-    const store = createStore(rootReducers);
+    const store = createStore(rootReducers /* preloadedState, */,
+        // @ts-expect-error: import devtools extension
+        window.__REDUX_DEVTOOLS_EXTENSION__ &&
+           // @ts-expect-error: import devtools extension
+        window.__REDUX_DEVTOOLS_EXTENSION__(),
+         );
     return store;
 }
 
