@@ -8,7 +8,10 @@ import { AuthProvider } from "./pages/auth/context";
 import App from "./app";
 import { ErrorBoundary } from "./pages/error/error-boundary";
 
-import "./store";
+import configureStore from "./store";
+
+const store = configureStore();
+console.log(store);
 
 const accessToken = storage.get("auth");
 if (accessToken) {

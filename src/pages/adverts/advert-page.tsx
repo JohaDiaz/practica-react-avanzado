@@ -77,12 +77,13 @@ export default function AdvertPage() {
     [navigate],
   );
 
+  //MODIFICADO
   useEffect(() => {
     async function loadAdvert() {
       try {
         setLoading(true);
-        const advert = await getAdvert(advertId);
-        setAdvert(advert);
+        const advertData = await getAdvert(advertId);
+        setAdvert(Array.isArray(advertData) ? advertData[0] : advertData); // Asegura que sea un solo objeto
       } catch (error) {
         handleError(error);
       } finally {
@@ -90,7 +91,8 @@ export default function AdvertPage() {
       }
     }
     loadAdvert();
-  }, [advertId, handleError]);
+}, [advertId, handleError]);
+
 
   const handleDelete = async () => {
     try {
