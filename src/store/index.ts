@@ -1,8 +1,12 @@
-import { createStore } from "redux";
-import { reducer } from "./reducers";
+import { combineReducers, createStore } from "redux";
+import * as reducers from "./reducers";
+// Importa un objeto con todos los exports del fichero
+
+
 
 export default function configureStore(){
-    const store = createStore(reducer);
+    const rootReducers = combineReducers(reducers);
+    const store = createStore(rootReducers);
     return store;
 }
 

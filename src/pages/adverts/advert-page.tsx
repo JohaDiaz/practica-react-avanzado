@@ -82,8 +82,8 @@ export default function AdvertPage() {
     async function loadAdvert() {
       try {
         setLoading(true);
-        const advertData = await getAdvert(advertId);
-        setAdvert(Array.isArray(advertData) ? advertData[0] : advertData); // Asegura que sea un solo objeto
+        const advert = await getAdvert(advertId);
+        setAdvert(advert);
       } catch (error) {
         handleError(error);
       } finally {

@@ -12,8 +12,8 @@ export async function getAdverts() {
 //MODIFICADO
 export async function getAdvert(advertId: string) {
   const url = `${advertsUrl}/${advertId}`;
-  const response = await client.get<Advert | Advert[]>(url);
-  return Array.isArray(response.data) ? response.data[0] : response.data;
+  const response = await client.get<Advert>(url);
+  return response.data;
 }
 
 export async function createAdvert(advertDto: CreateAdvertDto) {
