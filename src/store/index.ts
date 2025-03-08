@@ -4,16 +4,14 @@ import * as reducers from "./reducers";
 
 import { useDispatch, useSelector } from "react-redux";
 import type { State } from "./reducers";
-
+import { composeWithDevTools } from "@redux-devtools/extension";
 
 export default function configureStore(preloadedState: Partial<State>){
     const rootReducers = combineReducers(reducers);
     const store = createStore(rootReducers,
+        //@ts-expect-error: preloaded state is not inferred
         preloadedState,
-        // @ts-expect-error: import devtools extension
-        window.__REDUX_DEVTOOLS_EXTENSION__ &&
-           // @ts-expect-error: import devtools extension
-        window.__REDUX_DEVTOOLS_EXTENSION__(),
+        composeWithDevTools(),
          );
     return store;
 }

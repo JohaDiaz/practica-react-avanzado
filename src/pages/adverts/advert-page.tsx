@@ -77,7 +77,7 @@ export default function AdvertPage() {
     [navigate],
   );
 
-  //MODIFICADO
+
   useEffect(() => {
     async function loadAdvert() {
       try {
