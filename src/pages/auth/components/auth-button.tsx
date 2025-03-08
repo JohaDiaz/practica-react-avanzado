@@ -4,6 +4,7 @@ import { logout } from "../service";
 import { Button } from "@/components/ui/button";
 import { useAppSelector, useAppDispatch } from "../../../store";
 import { authLogout } from "@/store/actions";
+import { getIsLogged } from "@/store/selectors";
 
 
 function LogoutButton() {
@@ -31,7 +32,7 @@ function LogoutButton() {
 }
 
 export default function AuthButton() {
-  const isLogged = useAppSelector((state) => state.auth)
+  const isLogged = useAppSelector(getIsLogged);
   
 
   if (isLogged) {

@@ -3,11 +3,13 @@ import * as reducers from "./reducers";
 // Importa un objeto con todos los exports del fichero
 
 import { useDispatch, useSelector } from "react-redux";
+import type { State } from "./reducers";
 
 
-export default function configureStore(){
+export default function configureStore(preloadedState: Partial<State>){
     const rootReducers = combineReducers(reducers);
-    const store = createStore(rootReducers /* preloadedState, */,
+    const store = createStore(rootReducers,
+        preloadedState,
         // @ts-expect-error: import devtools extension
         window.__REDUX_DEVTOOLS_EXTENSION__ &&
            // @ts-expect-error: import devtools extension
