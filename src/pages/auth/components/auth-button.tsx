@@ -1,15 +1,18 @@
 import { Link } from "react-router";
 import ConfirmationButton from "@/components/shared/confirmation-button";
-import { useAuth } from "../context";
 import { logout } from "../service";
 import { Button } from "@/components/ui/button";
+import { useAppSelector, useAppDispatch } from "../../../store";
+import { authLogout } from "@/store/actions";
+
 
 function LogoutButton() {
-  const { onLogout } = useAuth();
+  //const { onLogout } = useAuth();
+  const dispatch = useAppDispatch();
 
   const handleLogout = async () => {
     await logout();
-    onLogout();
+    dispatch(authLogout());
   };
 
   return (
@@ -28,7 +31,8 @@ function LogoutButton() {
 }
 
 export default function AuthButton() {
-  const { isLogged } = useAuth();
+  const isLogged = useAppSelector((state) => state.auth)
+  
 
   if (isLogged) {
     return <LogoutButton />;

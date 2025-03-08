@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router";
-import { useAuth } from "../context";
+import { useAppSelector } from "../../../store";
 
 export default function RequireAuth({ children }: { children: ReactNode }) {
-  const { isLogged } = useAuth();
+  const isLogged = useAppSelector((state) => state.auth);
   const location = useLocation();
 
   return isLogged ? (
@@ -12,3 +12,4 @@ export default function RequireAuth({ children }: { children: ReactNode }) {
     <Navigate to="/login" state={{ from: location.pathname }} replace />
   );
 }
+

@@ -9,6 +9,7 @@ import App from "./app";
 import { ErrorBoundary } from "./pages/error/error-boundary";
 
 import configureStore from "./store";
+import { Provider } from "react-redux"
 
 const store = configureStore();
 console.log(store);
@@ -20,12 +21,14 @@ if (accessToken) {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
-      <ErrorBoundary>
-        <AuthProvider defaultIsLogged={!!accessToken}>
-          <App />
-        </AuthProvider>
-      </ErrorBoundary>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <Provider store ={store}>
+        <BrowserRouter>
+            <AuthProvider defaultIsLogged={!!accessToken}>
+              <App />
+            </AuthProvider>
+        </BrowserRouter>
+      </Provider>
+    </ErrorBoundary>
   </StrictMode>,
 );
