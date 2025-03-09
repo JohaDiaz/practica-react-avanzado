@@ -6,21 +6,19 @@ import { auth, adverts, ui, tags  } from "./reducers";
 import type { State } from "./reducers";
 
 
-
-export default function configureStore(){
-
-    const preloadedState: Partial<State> = {
-        auth: !!localStorage.getItem("token"),
-    };
-    const rootReducer = combineReducers({ auth, adverts, ui, tags  });
+export default function configureStore(preloadedState?: Partial<State>){
+    const rootReducer = combineReducers({ auth, adverts, ui, tags });
     const store = createStore(
         rootReducer,
         //@ts-expect-error: preloaded state is not inferred
         preloadedState,
         composeWithDevTools(),
          );
-    return store;   
+
+    return store;
+    
 }
+
 
 
 export type AppStore = ReturnType<typeof configureStore>;
