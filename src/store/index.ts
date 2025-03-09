@@ -8,7 +8,7 @@ import { auth, adverts, ui } from "./reducers";
 import type { State } from "./reducers";
 
 
-export default function configureStore(preloadedState: Partial<State>){
+export default function configureStore(preloadedState?: Partial<State>){
     const rootReducer = combineReducers({ auth, adverts, ui });
     const store = createStore(
         rootReducer,

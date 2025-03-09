@@ -67,7 +67,7 @@ export const advertCreated = (advert: Advert): AdvertCreated => ({
     payload: advert,
 })
 
-export const UiResetError = (): UiResetError => ({
+export const uiResetError = (): UiResetError => ({
     type: "ui/reset-error",
 })
 

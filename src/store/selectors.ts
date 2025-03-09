@@ -2,7 +2,12 @@ import type { RootState } from ".";
 
 export const getIsLogged = (state: RootState) => state.auth;
 
-export const getAllAdverts = (state: RootState) => state.adverts;
+export const getAllAdverts = (state: RootState) => {
+  console.log("Estado completo en getAllAdverts:", state);
+  console.log("Contenido de `adverts` en Redux:", state.adverts);
+  return state.adverts || [];
+};
+
 
 //export const getTweets = (state: RootState) => state.tweets.data || [];
 

@@ -11,8 +11,15 @@ import ActionButton from "@/components/shared/action-button";
 import Logo from "@/components/shared/nodepop-react";
 import type { Credentials } from "./types";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { authLoginFulfilled, authLoginPending, authLoginRejected } from "@/store/actions";
+import {
+  authLoginFulfilled,
+  authLoginPending,
+  authLoginRejected,
+} from "@/store/actions";
 import { getUi } from "@/store/selectors";
+import { uiResetError } from "@/store/actions";
+
+
 
 function LoginForm({
   onSubmit,
@@ -23,7 +30,9 @@ function LoginForm({
     email: "",
     password: "",
   });
-  const [submitting, setSubmitting] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const { pending, error } = useAppSelector(getUi);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCredentials((credentials) => ({
@@ -31,21 +40,20 @@ function LoginForm({
       [event.target.name]: event.target.value,
     }));
   };
-  const dispatch = useAppDispatch();
-  const { pending, error } = useAppSelector(getUi);
-  
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const remember = !!formData.get("remember");
+
+    dispatch(authLoginPending()); 
+
     try {
-      dispatch(authLoginPending());
-      setSubmitting(true);
       await onSubmit({ ...credentials, remember });
-      dispatch(authLoginFulfilled());
+      dispatch(authLoginFulfilled()); 
     } catch (error) {
+      dispatch(authLoginRejected(error)); 
       if (isApiClientError(error)) {
-        dispatch(authLoginRejected(error));
         toast.error(error.message);
       } else {
         toast.error("Unexpected error");
@@ -54,7 +62,7 @@ function LoginForm({
   };
 
   const { email, password } = credentials;
-  const canSubmit = email && password;
+  const isDisable = !email || !password || pending; 
 
   return (
     <div>
@@ -85,28 +93,29 @@ function LoginForm({
           <Switch name="remember" value="remember" />
           Remember me next time
         </FormField>
-        <ActionButton
-          disabled={!canSubmit || submitting}
-          loading={submitting}
-          className="w-full"
-        >
-          {submitting
-            ? "Please wait"
-            : canSubmit
-              ? "Log in to Nodepop"
-              : "Enter your credentials"}
+        <ActionButton disabled={isDisable} loading={pending} className="w-full">
+          {pending ? "Please wait" : "Log in to Nodepop"}
         </ActionButton>
       </form>
+  
+      {error && (
+        <p
+          className="text-red-500 cursor-pointer"
+          onClick={() => dispatch(uiResetError())}
+        >
+          {error.message}
+        </p>
+      )}
+  
       <Toaster position="bottom-center" richColors />
     </div>
-  );
+  );  
 }
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
-
 
   return (
     <div className="mx-auto h-dvh max-w-md">
@@ -119,8 +128,8 @@ export default function LoginPage() {
         </header>
         <LoginForm
           onSubmit={async ({ remember, ...credentials }) => {
+            dispatch(authLoginPending()); 
             await login(credentials, remember);
-            dispatch(authLoginPending());
             navigate(location.state?.from ?? "/", { replace: true });
           }}
         />
