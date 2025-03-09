@@ -3,14 +3,15 @@ import { Link, useNavigate } from "react-router";
 import { Euro, SearchX } from "lucide-react";
 import { isApiClientError } from "@/api/error";
 import { Button } from "@/components/ui/button";
-import { getAdverts } from "./service";
+import { getAdverts, getTags } from "./service";
 import { filterAdverts } from "./filters";
 import FiltersInputs from "./components/filters-inputs";
 import { AdvertCard } from "./components/advert-card";
 import type { Filters } from "./types";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { advertsLoaded } from "@/store/actions";
-import { getAllAdverts } from "@/store/selectors";
+import { advertsLoaded, tagsLoaded } from "@/store/actions";
+import { getAllAdverts, getAllTags } from "@/store/selectors"; 
+
 
 function NoAdverts() {
   return (
@@ -52,8 +53,11 @@ export default function AdvertsPage() {
   const navigate = useNavigate();
   //const [adverts, setAdverts] = useState<Advert[] | null>(null);
   const adverts =useAppSelector(getAllAdverts);
+  const tags = useAppSelector(getAllTags);
+
+  console.log("Todos los ID en Redux:", adverts.map(a => a.id));
+  console.log("Tags almacenados en Redux:", tags);
   
-console.log("Todos los ID en Redux:", adverts.map(a => a.id));
 
   //getAllAdverts from selectors
 
@@ -63,19 +67,21 @@ console.log("Todos los ID en Redux:", adverts.map(a => a.id));
   const [filters, setFilters] = useState<Filters | null>(null);
 
   const dispatch = useAppDispatch()
-
+  
 
   useEffect(() => {
-    async function loadAdverts() {
+    async function loadAdvertsAndTags() {
       try {
         setIsLoading(true);
-        const adverts = await getAdverts();
-
-        //incluido
+  
+        const [adverts, tags] = await Promise.all([getAdverts(), getTags()]);
+  
         console.log("Anuncios obtenidos del backend", adverts);
         dispatch(advertsLoaded(adverts));
-
-        //setAdverts(adverts);
+  
+        console.log("Tags obtenidos del backend", tags);
+        dispatch(tagsLoaded(tags));
+  
       } catch (error) {
         if (isApiClientError(error)) {
           if (error.code === "UNAUTHORIZED") {
@@ -89,10 +95,10 @@ console.log("Todos los ID en Redux:", adverts.map(a => a.id));
         setIsLoading(false);
       }
     }
-    loadAdverts();
-    //MODIFICADO
-  }, [navigate, dispatch]);
-
+    loadAdvertsAndTags();
+  }, [navigate, dispatch, adverts.length]);
+  
+  
   if (!adverts || isLoading) {
     return "Loading....";
   }

@@ -9,7 +9,6 @@ export async function getAdverts() {
   return response.data;
 }
 
-//MODIFICADO
 export async function getAdvert(advertId: string) {
   const url = `${advertsUrl}/${advertId}`;
   const response = await client.get<Advert>(url);

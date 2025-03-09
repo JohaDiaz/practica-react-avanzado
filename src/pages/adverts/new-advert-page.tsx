@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { isApiClientError } from "@/api/error";
-import { createAdvert } from "./service";
+import { createAdvert, getTags } from "./service";
 import type { ChangeEvent, FormEvent } from "react";
 import type { Tags } from "./types";
 import TagsSelector from "./components/tags-selector";
@@ -12,8 +12,9 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import InputPhoto from "@/components/shared/input-photo";
-import { useAppDispatch } from "@/store";
-import { advertCreated } from "@/store/actions";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { advertCreated, tagsLoaded } from "@/store/actions";
+import { getAllTags } from "@/store/selectors";
 
 function validatePrice(value: FormDataEntryValue | null): number {
   try {
@@ -37,7 +38,23 @@ export default function NewAdvertPage() {
   const [tags, setTags] = useState<Tags>([]);
   const [loading, setLoading] = useState(false);
   const [, setError] = useState(null);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
+
+  const allTags = useAppSelector(getAllTags);
+  
+  useEffect(() => {
+    async function fetchTags() {
+      if (!allTags.length) {
+        try {
+          const tagsFromAPI = await getTags();
+          dispatch(tagsLoaded(tagsFromAPI));
+        } catch (error) {
+          console.error("Error cargando tags:", error);
+        }
+      }
+    }
+    fetchTags();
+  }, [dispatch, allTags.length]);
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -127,7 +144,11 @@ export default function NewAdvertPage() {
         </FormField>
         <FormField>
           Tags (at least one)
-          <TagsSelector onChange={handleTagsChange} className="justify-start" />
+          {allTags.length > 0 ? (
+            <TagsSelector onChange={handleTagsChange} className="justify-start" tags={allTags} />
+          ) : (
+            <p className="text-gray-500">Loading tags...</p>
+          )}
         </FormField>
         <div className="sm:col-span-2 sm:mx-auto">
           <FormField>
@@ -147,3 +168,4 @@ export default function NewAdvertPage() {
     </div>
   );
 }
+

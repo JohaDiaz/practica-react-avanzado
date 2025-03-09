@@ -15,35 +15,39 @@ const tagsClassNames: Record<string, string> = {
   work: "border-chart-4 text-chart-4 data-[state=on]:bg-chart-4 border-2 bg-white data-[state=on]:text-white",
 };
 
-export default function TagsSelector({
-  onChange,
-  className,
-}: {
+type TagsSelectorProps = {
+  tags?: Tags;
   onChange: (tags: Tags) => void;
   className?: string;
-}) {
-  const [tags, setTags] = useState<Tags | null>(null);
-  const [loading, setLoading] = useState(false);
+};
+
+  export default function TagsSelector({ onChange, className, tags: externalTags }: TagsSelectorProps) {
+  const [tags, setTags] = useState<Tags | null>(externalTags ?? null);
+  const [loading, setLoading] = useState(!externalTags);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     async function loadTags() {
+      if (externalTags) {
+        setTags(externalTags);
+        setLoading(false);
+        return;
+      }
       try {
         setLoading(true);
-        const tags = await getTags();
-        setTags(tags);
+        const fetchedTags = await getTags();
+        setTags(fetchedTags);
       } catch (error) {
         if (error instanceof Error) {
           setError(error);
         }
-        // TODO: fire an error to be caught by ErrorBoundary
       } finally {
         setLoading(false);
       }
     }
 
     loadTags();
-  }, []);
+  }, [externalTags]);
 
   if (error) {
     return <Badge className="bg-destructive h-9">No tags available</Badge>;

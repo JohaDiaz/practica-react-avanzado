@@ -29,6 +29,16 @@ type AdvertCreated = {
     payload: Advert;
 };
 
+type AdvertDeleted = {
+    type: "adverts/deleted";
+    payload: string;
+};
+
+type TagsLoaded = {
+    type: "tags/loaded";
+    payload: string[];
+};
+
 type UiResetError = {
     type: "ui/reset-error",
 }
@@ -67,10 +77,20 @@ export const advertCreated = (advert: Advert): AdvertCreated => ({
     payload: advert,
 })
 
+export const advertDeleted = (advertId: string): AdvertDeleted => ({
+    type: "adverts/deleted",
+    payload: advertId,
+});
+
+export const tagsLoaded = (tags: string[]): TagsLoaded => ({
+    type: "tags/loaded",
+    payload: tags,
+});
+
 export const uiResetError = (): UiResetError => ({
     type: "ui/reset-error",
 })
 
 
 
-export type Actions = AuthLoginPending | AuthLoginFulfilled | AuthLoginRejected |  AuthLogout | AdvertsLoaded | AdvertCreated | UiResetError; 
+export type Actions = AuthLoginPending | AuthLoginFulfilled | AuthLoginRejected |  AuthLogout | AdvertsLoaded | AdvertCreated | AdvertDeleted | TagsLoaded | UiResetError; 

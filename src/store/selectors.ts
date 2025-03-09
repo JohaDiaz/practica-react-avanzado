@@ -17,3 +17,5 @@ export const getAdvertDetail = (state: RootState, advertId?: string) =>
       : null;
 
 export const getUi = (state: RootState) => state.ui;
+
+export const getAllTags = (state: RootState) => state.tags;

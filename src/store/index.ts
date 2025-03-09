@@ -1,25 +1,25 @@
 import { combineReducers, legacy_createStore as createStore } from "redux";
 import { composeWithDevTools } from "@redux-devtools/extension";
 import { useDispatch, useSelector } from "react-redux";
-import { auth, adverts, ui } from "./reducers";
+import { auth, adverts, ui, tags  } from "./reducers";
 // Importa un objeto con todos los exports del fichero
-
-
 import type { State } from "./reducers";
 
 
-export default function configureStore(preloadedState?: Partial<State>){
-    const rootReducer = combineReducers({ auth, adverts, ui });
+
+export default function configureStore(){
+
+    const preloadedState: Partial<State> = {
+        auth: !!localStorage.getItem("token"),
+    };
+    const rootReducer = combineReducers({ auth, adverts, ui, tags  });
     const store = createStore(
         rootReducer,
         //@ts-expect-error: preloaded state is not inferred
         preloadedState,
         composeWithDevTools(),
          );
-         console.log("Estado inicial de Redux:", store.getState());
-
-    return store;
-    
+    return store;   
 }
 
 

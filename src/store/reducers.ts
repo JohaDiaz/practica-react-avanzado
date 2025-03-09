@@ -44,6 +44,8 @@ export function adverts(state = defaultState.adverts, action: Actions): State["a
             return [...action.payload];
         case "adverts/created":
             return [...state, action.payload];
+        case "adverts/deleted":
+            return state.filter(advert => advert.id !== action.payload);
         default:
             return state;
     }
@@ -64,6 +66,16 @@ export function ui(state = defaultState.ui, action: Actions): State["ui"]{
             return state;
     }
 }
+
+export function tags(state = [], action: Actions): string[] {
+    switch (action.type) {
+        case "tags/loaded":
+            return action.payload;
+        default:
+            return state;
+    }
+}
+
 
 
 // export function reducer(state =defaultState, action: Actions): State{

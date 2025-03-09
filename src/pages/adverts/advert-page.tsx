@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { deleteAdvert } from "./service";
 import { isApiClientError } from "@/api/error";
@@ -12,8 +12,10 @@ import imagePlacehoder from "@/assets/placeholder.webp";
 import { useAppSelector } from "@/store";
 import { getAdvertDetail, getAllAdverts } from "../../store/selectors"
 import { useNavigate } from "react-router" 
-//import { useAppDispatch } from "../../store"
-//import { advertsLoaded } from "@/store/actions";
+import { getAdvert } from "./service"; 
+import { useAppDispatch } from "@/store";
+import { advertsLoaded } from "@/store/actions";
+import { advertDeleted } from "@/store/actions";
 
 const tagsClassNames: Record<string, string> = {
   lifestyle: "bg-chart-1",
@@ -64,19 +66,25 @@ console.log("ID obtenido de la URL:", advertId);
 const adverts = useAppSelector(getAllAdverts);
 console.log("Todos los ID en Redux:", adverts.map(a => a.id));
 
+const dispatch = useAppDispatch();
 const advert = useAppSelector(state => getAdvertDetail(state, advertId));
 
-// const dispatch = useAppDispatch();
-
-// useEffect(() => {
-//   dispatch(advertsLoaded());
-// }, [dispatch]);
+useEffect(() => {
+  if (!advert) {
+    async function fetchAdvert() {
+      try {
+        const advertData = await getAdvert(advertId);
+        dispatch(advertsLoaded([advertData])); 
+      } catch (error) {
+        console.error("Error cargando anuncio:", error);
+      }
+    }
+    fetchAdvert();
+  }
+}, [advert, advertId, dispatch]);
 
 console.log("Resultado de getAdvertDetail:", advert);
-
-
 const isLoading = useAppSelector(getAllAdverts);
-
 
 
   //const [loading, setLoading] = useState(false);
@@ -120,19 +128,17 @@ const isLoading = useAppSelector(getAllAdverts);
 // }, [advertId, handleError]);
 
 
-  const handleDelete = async () => {
-    
-    try {
-      setDeleting(true);
-      await deleteAdvert(advertId);
-      navigate("/adverts");
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setDeleting(false);
-    }
-  };
-
+const handleDelete = async () => {
+  try {
+    setDeleting(true);
+    await deleteAdvert(advertId);
+    dispatch(advertDeleted(advertId)); 
+  } catch (error) {
+    handleError(error);
+  } finally {
+    setDeleting(false);
+  }
+};
   if (!advert && isLoading) {
     return "Loading....";
   }
