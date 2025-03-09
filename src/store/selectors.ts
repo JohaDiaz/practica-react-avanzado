@@ -10,3 +10,5 @@ export const getAdvertDetail = (state: RootState, advertId?: string) =>
     advertId
       ? state.adverts.find((advert) => String(advert.id).trim() === String(advertId).trim()) ?? null
       : null;
+
+export const getUi = (state: RootState) => state.ui;

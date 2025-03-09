@@ -10,8 +10,9 @@ import FormField from "@/components/shared/form-field";
 import ActionButton from "@/components/shared/action-button";
 import Logo from "@/components/shared/nodepop-react";
 import type { Credentials } from "./types";
-import { useAppDispatch } from "@/store";
-import { authLogin } from "@/store/actions";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { authLoginFulfilled, authLoginPending, authLoginRejected } from "@/store/actions";
+import { getUi } from "@/store/selectors";
 
 function LoginForm({
   onSubmit,
@@ -30,22 +31,25 @@ function LoginForm({
       [event.target.name]: event.target.value,
     }));
   };
-
+  const dispatch = useAppDispatch();
+  const { pending, error } = useAppSelector(getUi);
+  
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const remember = !!formData.get("remember");
     try {
+      dispatch(authLoginPending());
       setSubmitting(true);
       await onSubmit({ ...credentials, remember });
+      dispatch(authLoginFulfilled());
     } catch (error) {
       if (isApiClientError(error)) {
+        dispatch(authLoginRejected(error));
         toast.error(error.message);
       } else {
         toast.error("Unexpected error");
       }
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -103,6 +107,7 @@ export default function LoginPage() {
   const location = useLocation();
   const dispatch = useAppDispatch();
 
+
   return (
     <div className="mx-auto h-dvh max-w-md">
       <div className="grid gap-8 px-6 py-6 pt-12">
@@ -115,7 +120,7 @@ export default function LoginPage() {
         <LoginForm
           onSubmit={async ({ remember, ...credentials }) => {
             await login(credentials, remember);
-            dispatch(authLogin());
+            dispatch(authLoginPending());
             navigate(location.state?.from ?? "/", { replace: true });
           }}
         />

@@ -13,7 +13,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import InputPhoto from "@/components/shared/input-photo";
 import { useAppDispatch } from "@/store";
-import { advertcreated } from "@/store/actions";
+import { advertCreated } from "@/store/actions";
 
 function validatePrice(value: FormDataEntryValue | null): number {
   try {
@@ -65,7 +65,7 @@ export default function NewAdvertPage() {
         photo,
       });
 
-      dispatch(advertcreated(createdAdvert));
+      dispatch(advertCreated(createdAdvert));
 
       navigate(`/adverts/${createdAdvert.id}`);
     } catch (error) {

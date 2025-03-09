@@ -7,7 +7,7 @@ import { setAuthorizationHeader } from "./api/client";
 import App from "./app";
 import { ErrorBoundary } from "./pages/error/error-boundary";
 
-import configureStore from "./store";
+import configureStore from "@/store";
 import { Provider } from "react-redux"
 
 const accessToken = storage.get("auth");
