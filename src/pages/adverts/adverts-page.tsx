@@ -7,7 +7,10 @@ import { getAdverts } from "./service";
 import { filterAdverts } from "./filters";
 import FiltersInputs from "./components/filters-inputs";
 import { AdvertCard } from "./components/advert-card";
-import type { Advert, Filters } from "./types";
+import type { Filters } from "./types";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { advertsLoaded } from "@/store/actions";
+import { getAllAdverts } from "@/store/selectors";
 
 function NoAdverts() {
   return (
@@ -47,17 +50,32 @@ function NoMatches() {
 
 export default function AdvertsPage() {
   const navigate = useNavigate();
-  const [adverts, setAdverts] = useState<Advert[] | null>(null);
+  //const [adverts, setAdverts] = useState<Advert[] | null>(null);
+  const adverts =useAppSelector(getAllAdverts);
+  
+console.log("Todos los ID en Redux:", adverts.map(a => a.id));
+
+  //getAllAdverts from selectors
+
+
   const [isLoading, setIsLoading] = useState(false);
   const [, setError] = useState<null>(null);
   const [filters, setFilters] = useState<Filters | null>(null);
+
+  const dispatch = useAppDispatch()
+
 
   useEffect(() => {
     async function loadAdverts() {
       try {
         setIsLoading(true);
         const adverts = await getAdverts();
-        setAdverts(adverts);
+
+        //incluido
+        console.log("Anuncios obtenidos del backend", adverts);
+        dispatch(advertsLoaded(adverts));
+
+        //setAdverts(adverts);
       } catch (error) {
         if (isApiClientError(error)) {
           if (error.code === "UNAUTHORIZED") {
@@ -72,7 +90,8 @@ export default function AdvertsPage() {
       }
     }
     loadAdverts();
-  }, [navigate]);
+    //MODIFICADO
+  }, [navigate, dispatch]);
 
   if (!adverts || isLoading) {
     return "Loading....";

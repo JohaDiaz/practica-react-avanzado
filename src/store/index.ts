@@ -13,7 +13,9 @@ export default function configureStore(preloadedState: Partial<State>){
         preloadedState,
         composeWithDevTools(),
          );
+         
     return store;
+    
 }
 
 

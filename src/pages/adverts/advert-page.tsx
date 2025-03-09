@@ -1,14 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
-import { deleteAdvert, getAdvert } from "./service";
+import { useCallback, useState } from "react";
+import { useParams } from "react-router";
+import { deleteAdvert } from "./service";
 import { isApiClientError } from "@/api/error";
 import ConfirmationButton from "@/components/shared/confirmation-button";
-import type { Advert, Tags } from "./types";
+import type { Tags } from "./types";
 import { Badge } from "@/components/ui/badge";
 import { Euro, Trash2 } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import ActionButton from "@/components/shared/action-button";
 import imagePlacehoder from "@/assets/placeholder.webp";
+import { useAppSelector } from "@/store";
+import { getAdvertDetail, getAllAdverts } from "../../store/selectors"
+import { useNavigate } from "react-router" 
+//import { useAppDispatch } from "../../store"
+//import { advertsLoaded } from "@/store/actions";
 
 const tagsClassNames: Record<string, string> = {
   lifestyle: "bg-chart-1",
@@ -51,14 +56,34 @@ const AdvertPhoto = ({
 );
 
 export default function AdvertPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const params = useParams();
-  const [advert, setAdvert] = useState<Advert | null>(null);
-  const [loading, setLoading] = useState(false);
+const advertId = params.advertId ?? "";
+console.log("ID obtenido de la URL:", advertId);
+
+const adverts = useAppSelector(getAllAdverts);
+console.log("Todos los ID en Redux:", adverts.map(a => a.id));
+
+const advert = useAppSelector(state => getAdvertDetail(state, advertId));
+
+// const dispatch = useAppDispatch();
+
+// useEffect(() => {
+//   dispatch(advertsLoaded());
+// }, [dispatch]);
+
+console.log("Resultado de getAdvertDetail:", advert);
+
+
+const isLoading = useAppSelector(getAllAdverts);
+
+
+
+  //const [loading, setLoading] = useState(false);
   const [, setError] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  const advertId = params.advertId ?? "";
+  //const advertId = params.advertId ?? "";
 
   const handleError = useCallback(
     (error: unknown) => {
@@ -78,23 +103,24 @@ export default function AdvertPage() {
   );
 
 
-  useEffect(() => {
-    async function loadAdvert() {
-      try {
-        setLoading(true);
-        const advert = await getAdvert(advertId);
-        setAdvert(advert);
-      } catch (error) {
-        handleError(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadAdvert();
-}, [advertId, handleError]);
+//   useEffect(() => {
+//     async function loadAdvert() {
+//       try {
+//         setLoading(true);
+//         const advert = await getAdvert(advertId);
+//         setAdvert(advert);
+//       } catch (error) {
+//         handleError(error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     }
+//     loadAdvert();
+// }, [advertId, handleError]);
 
 
   const handleDelete = async () => {
+    
     try {
       setDeleting(true);
       await deleteAdvert(advertId);
@@ -106,8 +132,12 @@ export default function AdvertPage() {
     }
   };
 
-  if (!advert || loading) {
+  if (!advert && isLoading) {
     return "Loading....";
+  }
+  
+  if (!advert) {
+    return <p>Advert not found.</p>;
   }
 
   return (

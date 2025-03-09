@@ -5,11 +5,14 @@ import type { Actions } from "./actions";
 export type State = {
     auth: boolean;
     adverts: Advert[];
+    //adverts: { data:Advert[] | null; loaded: boolean};
 };
 
 const defaultState: State = {
     auth: false,
     adverts: [],
+    //adverts: {data:null, loaded:false},
+  
 };
 
 export function auth(state = defaultState.auth, action: Actions): State["auth"]{
@@ -23,17 +26,18 @@ export function auth(state = defaultState.auth, action: Actions): State["auth"]{
     }
 };
 
-export function adverts(state = defaultState.adverts, action: Actions): State["adverts"]{
-    switch (action.type){
-        case 'adverts/loaded':
-            return action.payload;
-        case 'adverts/created':
-        // return state.concat(action.payload);
+export function adverts(state = defaultState.adverts, action: Actions): State["adverts"] {
+    switch (action.type) {
+        case "adverts/loaded":
+            console.log("Anuncios guardados en Redux con estos ID:", action.payload.map(a => a.id));
+            return action.payload ?? [];
+        case "adverts/created":
             return [...state, action.payload];
         default:
             return state;
+    }
 }
-};
+
 
 // export function reducer(state =defaultState, action: Actions): State{
 
