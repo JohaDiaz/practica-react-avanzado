@@ -14,7 +14,6 @@ type AuthLoginRejected = {
     payload: Error,
 };
 
-
 type AuthLogout = {
     type: "auth/logout";
 };
@@ -59,6 +58,7 @@ export const authLoginRejected = (error: Error ): AuthLoginRejected => ({
     payload: error,
 })
 
+//export function authLogin = (credentials)
 
 export const authLogout = (): AuthLogout => ({
     type:"auth/logout",

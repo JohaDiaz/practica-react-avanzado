@@ -48,3 +48,77 @@ export default tseslint.config({
   },
 });
 ```
+# Nodepop Redux
+
+Este proyecto es una aplicación de anuncios desarrollada con **React** y **Redux**. Implementa gestión de estado global para manejar la autenticación, la carga de anuncios y sus operaciones CRUD, así como la gestión de etiquetas (tags).
+
+## 📌 Características
+
+- Gestión de sesión con Redux y almacenamiento en LocalStorage.
+- Obtención, creación y eliminación de anuncios desde el API.
+- Manejo de tags disponibles.
+- Uso de Redux DevTools para debugging.
+- Pruebas unitarias de acciones, reducers, selectores y componentes.
+
+
+## 🏗️ Estructura del proyecto
+
+```
+📂 src
+ ├── 📁 api            # Cliente API para llamadas al backend
+ ├── 📁 components     # Componentes reutilizables
+ ├── 📁 pages         # Páginas principales de la aplicación
+ ├── 📁 store         # Redux: actions, reducers, selectors
+ ├── 📁 tests         # Pruebas unitarias y de integración
+ ├── 📄 main.tsx      # Punto de entrada de la app
+ ├── 📄 App.tsx       # Estructura principal de la aplicación
+```
+
+## Funcionalidades implementadas
+
+###  Gestión del estado con Redux
+
+- Se almacena la información de la sesión del usuario.
+- Se maneja la obtención, creación y eliminación de anuncios y tags.
+
+###  Acciones y Reducers
+
+- Se han implementado acciones síncronas y asíncronas para interactuar con la API y actualizar el estado.
+
+###  Integración de Redux con la UI
+
+- Uso de `useSelector` y `useDispatch` para conectar componentes con Redux.
+
+###  Uso de Redux DevTools
+
+- Se ha configurado **Redux DevTools** para facilitar la depuración del estado global.
+
+## 📌 Tecnologías utilizadas
+
+- React
+- Redux
+- Redux DevTools
+- React Router
+- TypeScript
+- Jest + React Testing Library
+- Tailwind CSS
+- Vite
+
+###  Testing (pendiente por realizar)
+
+Se han implementado pruebas unitarias para:
+
+- ✅ Acción síncrona
+- ✅ Acción asíncrona
+- ✅ Reducer
+- ✅ Selector
+- ✅ Snapshot testing de un componente
+- ✅ Simulación de una acción del store dentro de un componente
+
+## ✅ Pruebas
+
+Ejecutar los tests con:
+
+```sh
+  npm test
+```
