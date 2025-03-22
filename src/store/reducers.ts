@@ -3,80 +3,84 @@ import type { Advert } from "../pages/adverts/types";
 import type { Actions } from "./actions";
 
 export type State = {
-    auth: boolean;
-    adverts: Advert[];
-    ui:{
-        pending: boolean,
-        error: Error | null,
-    };
-    //adverts: { data:Advert[] | null; loaded: boolean};
+  auth: boolean;
+  adverts: Advert[];
+  ui: {
+    pending: boolean;
+    error: Error | null;
+  };
+  tags: string[];
+  //adverts: { data:Advert[] | null; loaded: boolean};
 };
 
 const defaultState: State = {
-    auth: false,
-    adverts: [],
-    ui:{
-        pending: false,
-        error: null,
-    }
-    //adverts: {data:null, loaded:false},
+  auth: false,
+  adverts: [],
+  ui: {
+    pending: false,
+    error: null,
+  },
+  tags: [],
 };
 
-export function auth(state = defaultState.auth, action: Actions): State["auth"]{
-        switch (action.type){
-            case 'auth/login/fulfilled':
-                return true;
-            case 'auth/logout':
-                return false;
-            default:
-                return state;
-    }
-};
-
-export function adverts(state = defaultState.adverts, action: Actions): State["adverts"] {
-    switch (action.type) {
-        case "adverts/loaded":
-            console.log("Payload recibido en adverts/loaded:", action.payload);
-            if (!Array.isArray(action.payload)) {
-                console.error("Error: el payload no es un array", action.payload);
-                return state;
-            }
-            return [...action.payload];
-        case "adverts/created":
-            return [...state, action.payload];
-        case "adverts/deleted":
-            return state.filter(advert => advert.id !== action.payload);
-        default:
-            return state;
-    }
+export function auth(
+  state = defaultState.auth,
+  action: Actions,
+): State["auth"] {
+  switch (action.type) {
+    case "auth/login/fulfilled":
+      return true;
+    case "auth/logout":
+      return false;
+    default:
+      return state;
+  }
 }
 
-export function ui(state = defaultState.ui, action: Actions): State["ui"]{
+export function adverts(
+  state = defaultState.adverts,
+  action: Actions,
+): State["adverts"] {
+  switch (action.type) {
+    case "adverts/loaded":
+      console.log("Payload recibido en adverts/loaded:", action.payload);
+      if (!Array.isArray(action.payload)) {
+        console.error("Error: el payload no es un array", action.payload);
+        return state;
+      }
+      return [...action.payload];
+    case "adverts/created":
+      return [...state, action.payload];
+    case "adverts/deleted":
+      return state.filter((advert) => advert.id !== action.payload);
+    default:
+      return state;
+  }
+}
 
-    switch (action.type){
-        case "ui/reset-error":
-            return {...state, error: null };
-        case "auth/login/pending":
-            return { pending: true, error: null };
-        case "auth/login/fulfilled":
-            return { pending: false, error: null };
-        case "auth/login/rejected": 
-            return { pending: false, error: action.payload };
-        default:
-            return state;
-    }
+export function ui(state = defaultState.ui, action: Actions): State["ui"] {
+  switch (action.type) {
+    case "ui/reset-error":
+      return { ...state, error: null };
+    case "auth/login/pending":
+      return { pending: true, error: null };
+    case "auth/login/fulfilled":
+      return { pending: false, error: null };
+    case "auth/login/rejected":
+      return { pending: false, error: action.payload };
+    default:
+      return state;
+  }
 }
 
 export function tags(state = [], action: Actions): string[] {
-    switch (action.type) {
-        case "tags/loaded":
-            return action.payload;
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case "tags/loaded":
+      return action.payload;
+    default:
+      return state;
+  }
 }
-
-
 
 // export function reducer(state =defaultState, action: Actions): State{
 
@@ -90,7 +94,7 @@ export function tags(state = [], action: Actions): string[] {
 
 //export const reducer = combineReducers({ auth, adverts});
 
-// export function reducer(state = defaultState, action: Actions):  State { 
+// export function reducer(state = defaultState, action: Actions):  State {
 //     switch (action.type){
 //         case 'auth/login':
 //             return {...state, auth: true};

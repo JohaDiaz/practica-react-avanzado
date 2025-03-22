@@ -1,25 +1,16 @@
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { login } from "./service";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Toaster } from "@/components/ui/sonner";
-import { toast } from "sonner";
-import { isApiClientError } from "@/api/error";
 import FormField from "@/components/shared/form-field";
 import ActionButton from "@/components/shared/action-button";
 import Logo from "@/components/shared/nodepop-react";
 import type { Credentials } from "./types";
 import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  authLoginFulfilled,
-  authLoginPending,
-  authLoginRejected,
-} from "@/store/actions";
+import { authLogin } from "@/store/actions";
 import { getUi } from "@/store/selectors";
 import { uiResetError } from "@/store/actions";
-
-
 
 function LoginForm({
   onSubmit,
@@ -34,6 +25,17 @@ function LoginForm({
   const dispatch = useAppDispatch();
   const { pending, error } = useAppSelector(getUi);
 
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      const formData = new FormData(event.currentTarget);
+      const remember = !!formData.get("remember");
+      await onSubmit({ ...credentials, remember });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCredentials((credentials) => ({
       ...credentials,
@@ -41,28 +43,8 @@ function LoginForm({
     }));
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const remember = !!formData.get("remember");
-
-    dispatch(authLoginPending()); 
-
-    try {
-      await onSubmit({ ...credentials, remember });
-      dispatch(authLoginFulfilled()); 
-    } catch (error) {
-      dispatch(authLoginRejected(error)); 
-      if (isApiClientError(error)) {
-        toast.error(error.message);
-      } else {
-        toast.error("Unexpected error");
-      }
-    }
-  };
-
   const { email, password } = credentials;
-  const isDisable = !email || !password || pending; 
+  const isDisable = !email || !password || pending;
 
   return (
     <div>
@@ -97,19 +79,19 @@ function LoginForm({
           {pending ? "Please wait" : "Log in to Nodepop"}
         </ActionButton>
       </form>
-  
+
       {error && (
         <p
-          className="text-red-500 cursor-pointer"
+          className="cursor-pointer text-red-500"
           onClick={() => dispatch(uiResetError())}
         >
           {error.message}
         </p>
       )}
-  
+
       <Toaster position="bottom-center" richColors />
     </div>
-  );  
+  );
 }
 
 export default function LoginPage() {
@@ -128,9 +110,12 @@ export default function LoginPage() {
         </header>
         <LoginForm
           onSubmit={async ({ remember, ...credentials }) => {
-            dispatch(authLoginPending()); 
-            await login(credentials, remember);
-            navigate(location.state?.from ?? "/", { replace: true });
+            try {
+              await dispatch(authLogin(credentials, remember));
+              navigate(location.state?.from ?? "/", { replace: true });
+            } catch (error) {
+              // Ya manejado desde el thunk + UI
+            }
           }}
         />
       </div>
