@@ -1,8 +1,13 @@
 import type { Credentials } from "@/pages/auth/types";
-import type { Advert } from "../pages/adverts/types";
+import type { Advert, CreateAdvertDto } from "../pages/adverts/types";
 import { isApiClientError } from "@/api/error";
 import type { AppThunk } from ".";
 import { login } from "@/pages/auth/service";
+
+import { createAdvert } from "@/pages/adverts/service";
+import { getAdvert as getAdvertService } from "@/pages/adverts/service";
+import { getAdverts as getAdvertsFromAPI } from "@/pages/adverts/service";
+import { getAdvertDetail } from "@/store/selectors";
 
 //login
 type AuthLoginPending = {
@@ -22,13 +27,13 @@ type AuthLogout = {
   type: "auth/logout";
 };
 
-type AdvertsLoaded = {
-  type: "adverts/loaded";
-  payload: Advert[];
+type AdvertsLoadedFulfilled = {
+  type: "adverts/loaded/fulfilled";
+  payload: { data: Advert[]; loaded: boolean };
 };
 
-type AdvertCreated = {
-  type: "adverts/created";
+type AdvertCreatedFulfilled = {
+  type: "adverts/created/fulfilled";
   payload: Advert;
 };
 
@@ -82,18 +87,82 @@ export const authLogout = (): AuthLogout => ({
   type: "auth/logout",
 });
 
-export const advertsLoaded = (adverts: Advert[]): AdvertsLoaded => {
-  console.log("Enviando anuncios a Redux:", adverts);
+export const AdvertsLoadedFulfilled = (
+  adverts: Advert[],
+  loaded?: boolean,
+): AdvertsLoadedFulfilled => {
   return {
-    type: "adverts/loaded",
-    payload: adverts,
+    type: "adverts/loaded/fulfilled",
+    payload: { data: adverts, loaded: !!loaded },
   };
 };
 
-export const advertCreated = (advert: Advert): AdvertCreated => ({
-  type: "adverts/created",
+// export const AdvertsLoadedFulfilled = (
+//   adverts: Advert[],
+// ): AdvertsLoadedFulfilled => {
+//   return {
+//     type: "adverts/loaded/fulfilled",
+//     payload: adverts,
+//   };
+// };
+
+export const advertsLoaded = (): AppThunk<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    if (state.adverts.loaded) {
+      return;
+    }
+
+    try {
+      const adverts = await getAdvertsFromAPI();
+      dispatch(AdvertsLoadedFulfilled(adverts, true));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+};
+
+export const advertLoaded = (advertId: string): AppThunk<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    if (getAdvertDetail(state, advertId)) {
+      return;
+    }
+
+    try {
+      const advert = await getAdvertService(advertId);
+      dispatch(AdvertsLoadedFulfilled([advert]));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+};
+
+export const advertCreatedFulfilled = (
+  advert: Advert,
+): AdvertCreatedFulfilled => ({
+  type: "adverts/created/fulfilled",
   payload: advert,
 });
+
+export function advertCreate(
+  createAdvertDto: CreateAdvertDto,
+): AppThunk<Promise<Advert>> {
+  return async function (dispatch) {
+    // AdverCreatePending
+    try {
+      const createdAdvert = await createAdvert(createAdvertDto);
+      const advert = await getAdvertService(createdAdvert.id.toString());
+      dispatch(advertCreatedFulfilled(advert));
+      return advert;
+    } catch (error) {
+      if (isApiClientError(error)) {
+        // Manage advertCreateRejected
+      }
+      throw error;
+    }
+  };
+}
 
 export const advertDeleted = (advertId: string): AdvertDeleted => ({
   type: "adverts/deleted",
@@ -114,8 +183,8 @@ export type Actions =
   | AuthLoginFulfilled
   | AuthLoginRejected
   | AuthLogout
-  | AdvertsLoaded
-  | AdvertCreated
+  | AdvertsLoadedFulfilled
+  | AdvertCreatedFulfilled
   | AdvertDeleted
   | TagsLoaded
   | UiResetError;

@@ -4,7 +4,7 @@ import type { Actions } from "./actions";
 
 export type State = {
   auth: boolean;
-  adverts: Advert[];
+  adverts: { data: Advert[] | null; loaded: boolean };
   ui: {
     pending: boolean;
     error: Error | null;
@@ -15,7 +15,7 @@ export type State = {
 
 const defaultState: State = {
   auth: false,
-  adverts: [],
+  adverts: { data: [], loaded: false },
   ui: {
     pending: false,
     error: null,
@@ -42,17 +42,20 @@ export function adverts(
   action: Actions,
 ): State["adverts"] {
   switch (action.type) {
-    case "adverts/loaded":
-      console.log("Payload recibido en adverts/loaded:", action.payload);
-      if (!Array.isArray(action.payload)) {
-        console.error("Error: el payload no es un array", action.payload);
-        return state;
-      }
-      return [...action.payload];
-    case "adverts/created":
-      return [...state, action.payload];
+    case "adverts/loaded/fulfilled":
+      console.log("Payload recibido:", action.payload);
+      return {
+        data: action.payload.data,
+        loaded: action.payload.loaded,
+      };
+    case "adverts/created/fulfilled":
+      return { ...state, data: [...(state.data ?? []), action.payload] };
     case "adverts/deleted":
-      return state.filter((advert) => advert.id !== action.payload);
+      return {
+        ...state,
+        data:
+          state.data?.filter((advert) => advert.id !== action.payload) ?? null,
+      };
     default:
       return state;
   }

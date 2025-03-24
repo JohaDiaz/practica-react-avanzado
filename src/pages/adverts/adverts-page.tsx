@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Euro, SearchX } from "lucide-react";
-import { isApiClientError } from "@/api/error";
 import { Button } from "@/components/ui/button";
-import { getAdverts, getTags } from "./service";
 import { filterAdverts } from "./filters";
 import FiltersInputs from "./components/filters-inputs";
 import { AdvertCard } from "./components/advert-card";
 import type { Filters } from "./types";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { advertsLoaded, tagsLoaded } from "@/store/actions";
-import { getAllAdverts, getAllTags } from "@/store/selectors"; 
-
+import { advertsLoaded } from "@/store/actions";
+import { getAllAdverts, getAllTags } from "@/store/selectors";
 
 function NoAdverts() {
   return (
@@ -52,53 +49,27 @@ function NoMatches() {
 export default function AdvertsPage() {
   const navigate = useNavigate();
   //const [adverts, setAdverts] = useState<Advert[] | null>(null);
-  const adverts =useAppSelector(getAllAdverts);
+  const adverts = useAppSelector(getAllAdverts);
   const tags = useAppSelector(getAllTags);
 
-  console.log("Todos los ID en Redux:", adverts.map(a => a.id));
+  console.log(
+    "Todos los ID en Redux:",
+    adverts.map((a) => a.id),
+  );
   console.log("Tags almacenados en Redux:", tags);
-  
 
   //getAllAdverts from selectors
-
 
   const [isLoading, setIsLoading] = useState(false);
   const [, setError] = useState<null>(null);
   const [filters, setFilters] = useState<Filters | null>(null);
 
-  const dispatch = useAppDispatch()
-  
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    async function loadAdvertsAndTags() {
-      try {
-        setIsLoading(true);
-  
-        const [adverts, tags] = await Promise.all([getAdverts(), getTags()]);
-  
-        console.log("Anuncios obtenidos del backend", adverts);
-        dispatch(advertsLoaded(adverts));
-  
-        console.log("Tags obtenidos del backend", tags);
-        dispatch(tagsLoaded(tags));
-  
-      } catch (error) {
-        if (isApiClientError(error)) {
-          if (error.code === "UNAUTHORIZED") {
-            return navigate("/login");
-          }
-        }
-        setError(() => {
-          throw error;
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadAdvertsAndTags();
-  }, [navigate, dispatch, adverts.length]);
-  
-  
+    dispatch(advertsLoaded());
+  }, [dispatch]);
+
   if (!adverts || isLoading) {
     return "Loading....";
   }

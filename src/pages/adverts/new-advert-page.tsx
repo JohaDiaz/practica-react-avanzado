@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { isApiClientError } from "@/api/error";
-import { createAdvert, getTags } from "./service";
+import { getTags } from "./service";
 import type { ChangeEvent, FormEvent } from "react";
 import type { Tags } from "./types";
 import TagsSelector from "./components/tags-selector";
@@ -13,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import InputPhoto from "@/components/shared/input-photo";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { advertCreated, tagsLoaded } from "@/store/actions";
+import { advertCreate, tagsLoaded } from "@/store/actions";
 import { getAllTags } from "@/store/selectors";
 
 function validatePrice(value: FormDataEntryValue | null): number {
@@ -37,11 +36,11 @@ export default function NewAdvertPage() {
   const [name, setName] = useState("");
   const [tags, setTags] = useState<Tags>([]);
   const [loading, setLoading] = useState(false);
-  const [, setError] = useState(null);
+  const [setError] = useState(null);
   const dispatch = useAppDispatch();
 
   const allTags = useAppSelector(getAllTags);
-  
+
   useEffect(() => {
     async function fetchTags() {
       if (!allTags.length) {
@@ -74,28 +73,13 @@ export default function NewAdvertPage() {
 
     try {
       setLoading(true);
-      const createdAdvert = await createAdvert({
-        name,
-        sale,
-        price,
-        tags,
-        photo,
-      });
-
-      dispatch(advertCreated(createdAdvert));
+      const createdAdvert = await dispatch(
+        advertCreate({ name, sale, price, tags, photo }),
+      );
 
       navigate(`/adverts/${createdAdvert.id}`);
     } catch (error) {
-      if (isApiClientError(error)) {
-        if (error.code === "UNAUTHORIZED") {
-          return navigate("/login");
-        }
-      }
-      setError(() => {
-        throw error;
-      });
-    } finally {
-      setLoading(false);
+      console.log(error);
     }
   };
 
@@ -145,7 +129,11 @@ export default function NewAdvertPage() {
         <FormField>
           Tags (at least one)
           {allTags.length > 0 ? (
-            <TagsSelector onChange={handleTagsChange} className="justify-start" tags={allTags} />
+            <TagsSelector
+              onChange={handleTagsChange}
+              className="justify-start"
+              tags={allTags}
+            />
           ) : (
             <p className="text-gray-500">Loading tags...</p>
           )}
@@ -168,4 +156,3 @@ export default function NewAdvertPage() {
     </div>
   );
 }
-
