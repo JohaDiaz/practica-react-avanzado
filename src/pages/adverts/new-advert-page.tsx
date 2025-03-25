@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { getTags } from "./service";
 import type { ChangeEvent, FormEvent } from "react";
 import type { Tags } from "./types";
 import TagsSelector from "./components/tags-selector";
@@ -12,7 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import InputPhoto from "@/components/shared/input-photo";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { advertCreate, tagsLoaded } from "@/store/actions";
+import { advertCreate, loadTags } from "@/store/actions";
 import { getAllTags } from "@/store/selectors";
 
 function validatePrice(value: FormDataEntryValue | null): number {
@@ -41,19 +40,23 @@ export default function NewAdvertPage() {
 
   const allTags = useAppSelector(getAllTags);
 
+  // useEffect(() => {
+  //   async function fetchTags() {
+  //     if (!allTags.length) {
+  //       try {
+  //         const tagsFromAPI = await getTags();
+  //         dispatch(tagsLoaded(tagsFromAPI));
+  //       } catch (error) {
+  //         console.error("Error cargando tags:", error);
+  //       }
+  //     }
+  //   }
+  //   fetchTags();
+  // }, [dispatch, allTags.length]);
+
   useEffect(() => {
-    async function fetchTags() {
-      if (!allTags.length) {
-        try {
-          const tagsFromAPI = await getTags();
-          dispatch(tagsLoaded(tagsFromAPI));
-        } catch (error) {
-          console.error("Error cargando tags:", error);
-        }
-      }
-    }
-    fetchTags();
-  }, [dispatch, allTags.length]);
+    dispatch(loadTags());
+  }, [dispatch]);
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);

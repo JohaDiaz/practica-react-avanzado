@@ -2,11 +2,6 @@ import type { Credentials } from "@/pages/auth/types";
 import type { Advert, CreateAdvertDto } from "../pages/adverts/types";
 import { isApiClientError } from "@/api/error";
 import type { AppThunk } from ".";
-import { login } from "@/pages/auth/service";
-
-import { createAdvert } from "@/pages/adverts/service";
-import { getAdvert as getAdvertService } from "@/pages/adverts/service";
-import { getAdverts as getAdvertsFromAPI } from "@/pages/adverts/service";
 import { getAdvertDetail } from "@/store/selectors";
 
 //login
@@ -65,20 +60,22 @@ export const authLoginRejected = (error: Error): AuthLoginRejected => ({
   payload: error,
 });
 
+//api
 export function authLogin(
   credentials: Credentials,
   remember: boolean,
 ): AppThunk<Promise<void>> {
-  return async function (dispatch) {
+  return async function (dispatch, _getState, { api, router }) {
     dispatch(authLoginPending());
     try {
-      await login(credentials, remember);
+      await api.authService.login(credentials, remember);
       dispatch(authLoginFulfilled());
+      const to = router.state.location.state?.from ?? "/";
+      router.navigate(to, { replace: true });
     } catch (error) {
       if (isApiClientError(error)) {
         dispatch(authLoginRejected(error));
       }
-      throw error;
     }
   };
 }
@@ -106,15 +103,16 @@ export const AdvertsLoadedFulfilled = (
 //   };
 // };
 
+//api
 export const advertsLoaded = (): AppThunk<Promise<void>> => {
-  return async (dispatch, getState) => {
+  return async (dispatch, getState, { api }) => {
     const state = getState();
     if (state.adverts.loaded) {
       return;
     }
 
     try {
-      const adverts = await getAdvertsFromAPI();
+      const adverts = await api.advertsService.getAdverts();
       dispatch(AdvertsLoadedFulfilled(adverts, true));
     } catch (error) {
       console.error(error);
@@ -122,15 +120,16 @@ export const advertsLoaded = (): AppThunk<Promise<void>> => {
   };
 };
 
+//api
 export const advertLoaded = (advertId: string): AppThunk<Promise<void>> => {
-  return async (dispatch, getState) => {
+  return async (dispatch, getState, { api }) => {
     const state = getState();
     if (getAdvertDetail(state, advertId)) {
       return;
     }
 
     try {
-      const advert = await getAdvertService(advertId);
+      const advert = await api.advertsService.getAdvert(advertId);
       dispatch(AdvertsLoadedFulfilled([advert]));
     } catch (error) {
       console.error(error);
@@ -145,14 +144,18 @@ export const advertCreatedFulfilled = (
   payload: advert,
 });
 
+//api
 export function advertCreate(
   createAdvertDto: CreateAdvertDto,
 ): AppThunk<Promise<Advert>> {
-  return async function (dispatch) {
+  return async function (dispatch, _getState, { api }) {
     // AdverCreatePending
     try {
-      const createdAdvert = await createAdvert(createAdvertDto);
-      const advert = await getAdvertService(createdAdvert.id.toString());
+      const createdAdvert =
+        await api.advertsService.createAdvert(createAdvertDto);
+      const advert = await api.advertsService.getAdvert(
+        createdAdvert.id.toString(),
+      );
       dispatch(advertCreatedFulfilled(advert));
       return advert;
     } catch (error) {
@@ -177,6 +180,22 @@ export const tagsLoaded = (tags: string[]): TagsLoaded => ({
 export const uiResetError = (): UiResetError => ({
   type: "ui/reset-error",
 });
+
+// thunk para cargar los tags desde la API
+// api
+export const loadTags = (): AppThunk<Promise<void>> => {
+  return async (dispatch, getState, { api }) => {
+    const state = getState();
+    if (state.tags.length) return;
+
+    try {
+      const tags = await api.advertsService.getTags();
+      dispatch(tagsLoaded(tags));
+    } catch (error) {
+      console.error("Error al cargar tags:", error);
+    }
+  };
+};
 
 export type Actions =
   | AuthLoginPending
