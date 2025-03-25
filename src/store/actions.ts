@@ -32,6 +32,11 @@ type AdvertCreatedFulfilled = {
   payload: Advert;
 };
 
+type AdvertsDetailRejected = {
+  type: "adverts/detail/rejected";
+  payload: Error;
+};
+
 type AdvertDeleted = {
   type: "adverts/deleted";
   payload: string;
@@ -120,6 +125,11 @@ export const advertsLoaded = (): AppThunk<Promise<void>> => {
   };
 };
 
+export const advertsDetailRejected = (error: Error): AdvertsDetailRejected => ({
+  type: "adverts/detail/rejected",
+  payload: error,
+});
+
 //api
 export const advertLoaded = (advertId: string): AppThunk<Promise<void>> => {
   return async (dispatch, getState, { api }) => {
@@ -132,6 +142,9 @@ export const advertLoaded = (advertId: string): AppThunk<Promise<void>> => {
       const advert = await api.advertsService.getAdvert(advertId);
       dispatch(AdvertsLoadedFulfilled([advert]));
     } catch (error) {
+      if (isApiClientError(error)) {
+        dispatch(advertsDetailRejected(error));
+      }
       console.error(error);
     }
   };
@@ -205,6 +218,7 @@ export type Actions =
   | AuthLogout
   | AdvertsLoadedFulfilled
   | AdvertCreatedFulfilled
+  | AdvertsDetailRejected
   | AdvertDeleted
   | TagsLoaded
   | UiResetError;

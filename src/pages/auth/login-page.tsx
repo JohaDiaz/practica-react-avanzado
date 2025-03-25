@@ -111,6 +111,7 @@ export default function LoginPage() {
               navigate(location.state?.from ?? "/", { replace: true });
             } catch (error) {
               // Ya manejado desde el thunk + UI
+              console.log(error);
             }
           }}
         />

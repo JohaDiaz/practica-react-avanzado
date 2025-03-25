@@ -27,6 +27,21 @@ type ExtraArgument = {
   router: Router;
 };
 
+const failureRedirects = (router: Router) => (store) => (next) => (action) => {
+  const result = next(action);
+
+  if (!action.type.endsWith("/rejected")) {
+    return result;
+  }
+  if (action.payload.code === "NOT_FOUND") {
+    return router.navigate("/404");
+  }
+  if (action.payload.code === "UNAUTHORIZED") {
+    return router.navigate("/login");
+  }
+  return result;
+};
+
 export default function configureStore(
   preloadedState: Partial<State>,
   router: Router,
@@ -41,6 +56,7 @@ export default function configureStore(
           api: { authService, advertsService },
           router,
         }),
+        failureRedirects(router),
       ),
     ),
   );
