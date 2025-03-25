@@ -27,13 +27,9 @@ function LoginForm({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      const formData = new FormData(event.currentTarget);
-      const remember = !!formData.get("remember");
-      await onSubmit({ ...credentials, remember });
-    } catch (error) {
-      console.error(error);
-    }
+    const formData = new FormData(event.currentTarget);
+    const remember = !!formData.get("remember");
+    await onSubmit({ ...credentials, remember });
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

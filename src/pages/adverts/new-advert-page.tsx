@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
 import type { ChangeEvent, FormEvent } from "react";
 import type { Tags } from "./types";
 import TagsSelector from "./components/tags-selector";
@@ -31,11 +30,9 @@ function validatePhoto(value: FormDataEntryValue | null): File | undefined {
 }
 
 export default function NewAdvertPage() {
-  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [tags, setTags] = useState<Tags>([]);
   const [loading, setLoading] = useState(false);
-  const [setError] = useState(null);
   const dispatch = useAppDispatch();
 
   const allTags = useAppSelector(getAllTags);
@@ -74,16 +71,8 @@ export default function NewAdvertPage() {
     const price = validatePrice(formData.get("price"));
     const photo = validatePhoto(formData.get("photo"));
 
-    try {
-      setLoading(true);
-      const createdAdvert = await dispatch(
-        advertCreate({ name, sale, price, tags, photo }),
-      );
-
-      navigate(`/adverts/${createdAdvert.id}`);
-    } catch (error) {
-      console.log(error);
-    }
+    setLoading(true);
+    dispatch(advertCreate({ name, sale, price, tags, photo }));
   };
 
   const buttonDisabled = !name || !tags.length || loading;

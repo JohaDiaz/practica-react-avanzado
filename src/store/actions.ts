@@ -148,7 +148,7 @@ export const advertCreatedFulfilled = (
 export function advertCreate(
   createAdvertDto: CreateAdvertDto,
 ): AppThunk<Promise<Advert>> {
-  return async function (dispatch, _getState, { api }) {
+  return async function (dispatch, _getState, { api, router }) {
     // AdverCreatePending
     try {
       const createdAdvert =
@@ -157,6 +157,7 @@ export function advertCreate(
         createdAdvert.id.toString(),
       );
       dispatch(advertCreatedFulfilled(advert));
+      await router.navigate(`/adverts/${createdAdvert.id}`);
       return advert;
     } catch (error) {
       if (isApiClientError(error)) {
