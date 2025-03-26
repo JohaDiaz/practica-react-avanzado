@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { Euro, SearchX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { filterAdverts } from "./filters";
@@ -47,8 +47,6 @@ function NoMatches() {
 }
 
 export default function AdvertsPage() {
-  const navigate = useNavigate();
-  //const [adverts, setAdverts] = useState<Advert[] | null>(null);
   const adverts = useAppSelector(getAllAdverts);
   const tags = useAppSelector(getAllTags);
 
@@ -58,20 +56,16 @@ export default function AdvertsPage() {
   );
   console.log("Tags almacenados en Redux:", tags);
 
-  //getAllAdverts from selectors
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [, setError] = useState<null>(null);
+  const { pending } = useAppSelector((state) => state.ui);
   const [filters, setFilters] = useState<Filters | null>(null);
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(advertsLoaded());
   }, [dispatch]);
 
-  if (!adverts || isLoading) {
-    return "Loading....";
+  if (pending) {
+    return <p className="text-muted-foreground text-center">Loading...</p>;
   }
 
   if (!adverts.length) {
