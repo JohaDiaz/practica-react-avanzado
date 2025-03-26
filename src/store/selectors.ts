@@ -6,8 +6,6 @@ export const getAllAdverts = (state: RootState) => {
   return state.adverts.data || [];
 };
 
-//export const getTweets = (state: RootState) => state.tweets.data || [];
-
 export const getAdvertDetail = (state: RootState, advertId?: string) =>
   advertId
     ? (state.adverts.data?.find(
