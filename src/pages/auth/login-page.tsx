@@ -1,5 +1,5 @@
 import { type ChangeEvent, type FormEvent, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Toaster } from "@/components/ui/sonner";

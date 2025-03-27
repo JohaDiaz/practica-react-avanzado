@@ -1,0 +1,155 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LoginPage component > matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="mx-auto h-dvh max-w-md"
+  >
+    <div
+      class="grid gap-8 px-6 py-6 pt-12"
+    >
+      <header
+        class="grid justify-items-center gap-4"
+      >
+        <svg
+          class="h-24 w-24"
+          color="var(--primary)"
+          viewBox="0 0 200 200"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            fill="none"
+            height="140"
+            rx="20"
+            stroke="currentColor"
+            stroke-width="8"
+            width="180"
+            x="10"
+            y="40"
+          />
+          <path
+            d="M55 40 Q100 0 145 40"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="8"
+          />
+          <g
+            stroke="currentColor"
+            stroke-width="5"
+            transform="translate(100, 110) scale(1.6)"
+          >
+            <circle
+              cx="0"
+              cy="0"
+              fill="currentColor"
+              r="5"
+            />
+            <ellipse
+              fill="none"
+              rx="30"
+              ry="12"
+              transform="rotate(0)"
+            />
+            <ellipse
+              fill="none"
+              rx="30"
+              ry="12"
+              transform="rotate(60)"
+            />
+            <ellipse
+              fill="none"
+              rx="30"
+              ry="12"
+              transform="rotate(120)"
+            />
+          </g>
+        </svg>
+        <h1
+          class="text-center text-3xl font-bold sm:text-4xl"
+        >
+          Log in to Nodepop
+        </h1>
+      </header>
+      <div>
+        <form
+          class="grid gap-4"
+        >
+          <label
+            class="text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 grid w-full items-center gap-2"
+            data-slot="label"
+          >
+            Email
+            <input
+              autocomplete="off"
+              class="border-input file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 aria-invalid:outline-destructive/60 dark:aria-invalid:outline-destructive dark:aria-invalid:ring-destructive/40 aria-invalid:ring-destructive/20 aria-invalid:border-destructive/60 dark:aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-4 focus-visible:outline-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:focus-visible:ring-[3px] aria-invalid:focus-visible:outline-none md:text-sm dark:aria-invalid:focus-visible:ring-4"
+              data-slot="input"
+              name="email"
+              placeholder="Email"
+              type="email"
+              value=""
+            />
+          </label>
+          <label
+            class="text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 grid w-full items-center gap-2"
+            data-slot="label"
+          >
+            Password
+            <input
+              autocomplete="off"
+              class="border-input file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 aria-invalid:outline-destructive/60 dark:aria-invalid:outline-destructive dark:aria-invalid:ring-destructive/40 aria-invalid:ring-destructive/20 aria-invalid:border-destructive/60 dark:aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-4 focus-visible:outline-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:focus-visible:ring-[3px] aria-invalid:focus-visible:outline-none md:text-sm dark:aria-invalid:focus-visible:ring-4"
+              data-slot="input"
+              name="password"
+              placeholder="Password"
+              type="password"
+              value=""
+            />
+          </label>
+          <label
+            class="text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 w-full items-center gap-2 flex py-2"
+            data-slot="label"
+          >
+            <button
+              aria-checked="false"
+              class="peer data-[state=checked]:bg-primary data-[state=unchecked]:bg-input ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 border-transparent shadow-xs transition-[color,box-shadow] focus-visible:ring-4 focus-visible:outline-hidden focus-visible:outline-1 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:focus-visible:ring-0"
+              data-slot="switch"
+              data-state="unchecked"
+              role="switch"
+              type="button"
+              value="remember"
+            >
+              <span
+                class="bg-background pointer-events-none block size-4 rounded-full ring-0 shadow-lg transition-transform data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0"
+                data-slot="switch-thumb"
+                data-state="unchecked"
+              />
+            </button>
+            <input
+              aria-hidden="true"
+              name="remember"
+              style="transform: translateX(-100%); position: absolute; pointer-events: none; opacity: 0; margin: 0px; width: 0px; height: 0px;"
+              tabindex="-1"
+              type="checkbox"
+              value="remember"
+            />
+            Remember me next time
+          </label>
+          <button
+            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 focus-visible:ring-4 focus-visible:outline-1 aria-invalid:focus-visible:ring-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 h-9 px-4 py-2 has-[>svg]:px-3 w-full"
+            data-slot="button"
+            disabled=""
+          >
+            Log in to Nodepop
+          </button>
+        </form>
+        <section
+          aria-atomic="false"
+          aria-label="Notifications alt+T"
+          aria-live="polite"
+          aria-relevant="additions text"
+          tabindex="-1"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
