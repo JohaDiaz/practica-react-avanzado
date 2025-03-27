@@ -4,34 +4,35 @@ Este proyecto forma parte de la práctica final del módulo **React Avanzado**, 
 
 Repo original: [https://github.com/JohaDiaz/practica-react-avanzado](https://github.com/JohaDiaz/practica-react-avanzado)
 
-## 🎯 Objetivos cumplidos
+## Objetivos cumplidos
 
-1. ✅ Configuración del store de Redux:
+1.  Configuración del store de Redux:
 
-   - Manejo de sesión del usuario.
-   - Gestión de anuncios (listado, detalle, creación, borrado).
-   - Gestión de tags.
-   - Lectura y persistencia del token desde LocalStorage.
+- Manejo de sesión del usuario.
+- Gestión de anuncios (listado, detalle, creación, borrado).
+- Gestión de tags.
+- Lectura y persistencia del token desde LocalStorage.
 
-2. ✅ Acciones y reducers creados para manejar:
+2.  Acciones y reducers creados para manejar:
 
-   - Login / Logout.
-   - Carga de anuncios y tags.
-   - Creación y eliminación de anuncios.
+- Login / Logout.
+- Carga de anuncios y tags.
+- Creación y eliminación de anuncios.
 
-3. ✅ Componentes conectados al store usando `useAppDispatch` y `useAppSelector`.
+3.  Componentes conectados al store usando `useAppDispatch` y `useAppSelector`.
 
-4. ✅ Configuración de **Redux DevTools**.
+4.  Configuración de **Redux DevTools**.
 
-5. ✅ Tests implementados:
-   - Acción síncrona: `authLoginPending`
-   - Acción asíncrona: `authLogin` (mock de API + dispatch)
-   - Reducer: `adverts` (creación y carga)
-   - Selector: `getAdvertDetail`
-   - Snapshot: `LoginPage`
-   - Componente que ejecuta una acción del store, mockeando la acción (`authLogin`)
+5.  Tests implementados:
 
-## 🚀 Instalación y ejecución
+- Acción síncrona: `authLoginPending`
+- Acción asíncrona: `authLogin` (mock de API + dispatch)
+- Reducer: `adverts` (creación y carga)
+- Selector: `getAdvertDetail`
+- Snapshot: `LoginPage`
+- Componente que ejecuta una acción del store, mockeando la acción (`authLogin`)
+
+## Instalación y ejecución
 
 ### 1. Clona el repositorio
 
@@ -60,7 +61,7 @@ npm run dev
 
 Accede a la app en: http://localhost:5173
 
-✅ Ejecutar tests
+### Ejecutar tests
 
 ```bash
 npm run test
